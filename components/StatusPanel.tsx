@@ -22,7 +22,6 @@ import { WebhookAlertBridge } from "./WebhookAlertBridge.tsx";
 import { WebhookSettingsButton } from "./WebhookSettings.tsx";
 import { PHASE1_ARTIFACT, NETWORK } from "../lib/guard/network.ts";
 import { buildReadDiagnostic } from "../lib/rpc/timeouts.ts";
-import { evaluateOffline, useOnlineStatus } from "../lib/guard/online.ts";
 import { configureHref } from "../lib/guard/deeplink.ts";
 import { NO_POLICY_CONSEQUENCE, policyStateFrom } from "../lib/guard/policyState.ts";
 import { compilePrintReport } from "../lib/guard/printReport.ts";
@@ -141,16 +140,6 @@ export function StatusPanel() {
 
   useStatusTransitionAnnouncer(snapshot);
 
-  // A cached shell is interface, never chain state: this panel says so when the
-  // browser is offline or the live read a write must preflight has failed
-  // (issue #348), while leaving every real value — or every real error — in
-  // place.
-  const online = useOnlineStatus();
-  const offlineView = evaluateOffline({
-    online,
-    liveReadFailed: snapshot !== null && !snapshot.status.ok,
-  });
-
   const printReport = snapshot
     ? compilePrintReport(snapshot, NETWORK.name, wallet?.address || "Disconnected")
     : null;
@@ -206,11 +195,6 @@ export function StatusPanel() {
   return (
     <>
       {dmsAlert && dmsAlert.level !== "none" && <DmsAlertBanner alert={dmsAlert} />}
-      {offlineView.visible && (
-        <WarningBanner title={offlineView.title}>
-          <span className="tiny">{offlineView.detail}</span>
-        </WarningBanner>
-      )}
       <div
         className={`panel${rehearsalActive ? " sim-active" : ""}`}
         aria-busy={initialLoadPending}
