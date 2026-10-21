@@ -166,10 +166,9 @@ test("honours an HTTP-date hint", async () => {
     maxRetryAfterMs: 60_000,
   });
   assert.equal(delays.length, 1);
-  assert.ok(
-    delays[0] > 3000 && delays[0] <= 5000,
-    `the wait should be about five seconds, got ${delays[0]}`,
-  );
+  const first = delays[0];
+  assert.ok(first !== undefined, "one wait was captured");
+  assert.ok(first > 3000 && first <= 5000, `the wait should be about five seconds, got ${first}`);
 });
 
 test("clamps an excessive hint to the documented maximum", async () => {
