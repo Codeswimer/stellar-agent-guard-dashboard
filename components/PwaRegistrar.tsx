@@ -32,11 +32,7 @@ import {
   type PwaUpdateView,
 } from "../lib/guard/pwa.ts";
 import { announce } from "../lib/guard/useAnnounce.ts";
-import {
-  OFFLINE_ANNOUNCEMENT,
-  evaluateOffline,
-  useOnlineStatus,
-} from "../lib/guard/online.ts";
+import { OFFLINE_ANNOUNCEMENT, evaluateOffline, useOnlineStatus } from "../lib/guard/online.ts";
 
 export function PwaRegistrar() {
   // The worker that is ready but not active. `null` means no update is waiting.
