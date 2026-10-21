@@ -64,6 +64,15 @@ export function useOnlineStatus(): boolean {
 
 export const OFFLINE_SHELL_TITLE = "Offline — cached app shell, not live chain data";
 
+/**
+ * Spoken once through the shell's announcement queue when connectivity drops.
+ * The visible notice is not a live region of its own: every announcement in
+ * this console leaves through `announce()`, so it inherits the queue's
+ * ordering, deduplication and cap.
+ */
+export const OFFLINE_ANNOUNCEMENT =
+  "Offline. This is the cached app shell, not live chain data, and write actions are unavailable until a live read succeeds.";
+
 export const WRITES_UNAVAILABLE_TITLE = "Write actions are unavailable until a live read succeeds";
 
 export interface OfflineView {

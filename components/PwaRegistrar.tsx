@@ -32,7 +32,11 @@ import {
   type PwaUpdateView,
 } from "../lib/guard/pwa.ts";
 import { announce } from "../lib/guard/useAnnounce.ts";
-import { evaluateOffline, useOnlineStatus } from "../lib/guard/online.ts";
+import {
+  OFFLINE_ANNOUNCEMENT,
+  evaluateOffline,
+  useOnlineStatus,
+} from "../lib/guard/online.ts";
 
 export function PwaRegistrar() {
   // The worker that is ready but not active. `null` means no update is waiting.
@@ -49,6 +53,12 @@ export function PwaRegistrar() {
   );
   const online = useOnlineStatus();
   const view = evaluatePwaUpdate({ updateAvailable: waiting !== null, activity });
+
+  // Spoken through the same queue as every other announcement; the visible
+  // notice below is not a second live region.
+  useEffect(() => {
+    if (!online) announce(OFFLINE_ANNOUNCEMENT);
+  }, [online]);
 
   useEffect(() => {
     if (process.env.NODE_ENV !== "production") return;
@@ -154,7 +164,7 @@ export function PwaRegistrar() {
   if (!online) {
     const offline = evaluateOffline({ online: false, liveReadFailed: false });
     return (
-      <div className="pwa-update offline" role="status" aria-live="polite">
+      <div className="pwa-update offline" role="region" aria-label="Connection status">
         <div className="pwa-update-body">
           <strong>{offline.title}</strong>
           <span className="tiny muted">{offline.detail}</span>
